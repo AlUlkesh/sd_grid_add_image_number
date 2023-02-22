@@ -5,6 +5,7 @@ A custom extension for [AUTOMATIC1111/stable-diffusion-webui](https://github.com
 # Image number
 
 After choosing a new grid option in the settings:
+
 <img src="images/settings.jpg"/>
 
 the individual image numbers are added on the grid:
@@ -16,30 +17,31 @@ This should make identifying the images, especially in larger batches, much easi
 #  X/Y/Z script info
 
 After choosing this grid option in the settings:
+
 <img src="images/settings2.jpg"/>
 
 X/Y/Z script info is being added on the grid:
 <img src="images/xyz.jpg"/>
 
 This is currently availabe for the following X/Y/Z options:
-Seed
-Var. seed
-Var. strength
-Steps
-Hires steps
-CFG Scale
-Image CFG Scale
-Sampler
-Checkpoint name
-Sigma Churn
-Sigma min
-Sigma max
-Sigma noise
-Eta
-Clip skip
-Denoising
-Cond. Image Mask Weight
-VAE
+- Seed
+- Var. seed
+- Var. strength
+- Steps
+- Hires steps
+- CFG Scale
+- Image CFG Scale
+- Sampler
+- Checkpoint name
+- Sigma Churn
+- Sigma min
+- Sigma max
+- Sigma noise
+- Eta
+- Clip skip
+- Denoising
+- Cond. Image Mask Weight
+- VAE
 
 ## Installation
 
