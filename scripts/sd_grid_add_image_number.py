@@ -88,19 +88,21 @@ def img_write(img_num_draw, img_text, img_num_box_width, img_num_text_width, img
 
     return img_num_draw, no_fit
 
-def bottom_left(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width):
+def text_corner(corner, img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width):
     no_fit = True
     removed_key = False
     current_font_size = default_font_size
     while no_fit:
         img_num_font = ImageFont.truetype(Roboto, current_font_size)
         img_num_text_width, img_num_text_height = img_num_draw.textsize(img_text, font=img_num_font)
-
-        img_num_box_width = img_num_text_width + img_num_distance * 2
-        img_num_box_height = img_num_text_height + img_num_distance * 2
-        img_num_box_x1 = img_num_distance
-        img_num_box_y1 = img_num_height - img_num_distance - img_num_box_height
-
+        if corner == "bottom_left":
+            img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1 = bottom_left(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width, img_num_text_width, img_num_text_height)
+        if corner == "top_left":
+            img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1 = top_left(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width, img_num_text_width, img_num_text_height)
+        if corner == "top_right":
+            img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1 = top_right(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width, img_num_text_width, img_num_text_height)
+        if corner == "bottom_right":
+            img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1 = bottom_right(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width, img_num_text_width, img_num_text_height)
         img_num_draw, no_fit = img_write(img_num_draw, img_text, img_num_box_width, img_num_text_width, img_num_box_height, img_num_text_height, img_num_box_x1, img_num_box_y1, img_num_box_color, img_num_font, img_num_color, img_num_distance, img_num_width, img_num_height)
         if no_fit:
             if current_font_size <= min_font_size:
@@ -116,89 +118,37 @@ def bottom_left(img_text, img_num_draw, img_num_distance, img_num_height, img_nu
 
     return img_num_draw
 
-def top_left(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width):
-    no_fit = True
-    removed_key = False
-    current_font_size = default_font_size
-    while no_fit:
-        img_num_font = ImageFont.truetype(Roboto, current_font_size)
-        img_num_text_width, img_num_text_height = img_num_draw.textsize(img_text, font=img_num_font)
+def bottom_left(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width, img_num_text_width, img_num_text_height):
+    img_num_box_width = img_num_text_width + img_num_distance * 2
+    img_num_box_height = img_num_text_height + img_num_distance * 2
+    img_num_box_x1 = img_num_distance
+    img_num_box_y1 = img_num_height - img_num_distance - img_num_box_height
 
-        img_num_box_width = img_num_text_width + img_num_distance * 2
-        img_num_box_height = img_num_text_height + img_num_distance * 2
-        img_num_box_x1 = img_num_distance
-        img_num_box_y1 = img_num_distance
+    return img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1
 
-        img_num_draw, no_fit = img_write(img_num_draw, img_text, img_num_box_width, img_num_text_width, img_num_box_height, img_num_text_height, img_num_box_x1, img_num_box_y1, img_num_box_color, img_num_font, img_num_color, img_num_distance, img_num_width, img_num_height)
-        if no_fit:
-            if current_font_size <= min_font_size:
-                if removed_key:
-                    print(f'Text for "{img_text}" does not fit on image')
-                    no_fit = False
-                else:
-                    img_text = img_text.split(": ", 1)[1]
-                    current_font_size = default_font_size
-                    removed_key = True
-            else:
-                current_font_size = current_font_size - 1
+def top_left(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width, img_num_text_width, img_num_text_height):
+    img_num_box_width = img_num_text_width + img_num_distance * 2
+    img_num_box_height = img_num_text_height + img_num_distance * 2
+    img_num_box_x1 = img_num_distance
+    img_num_box_y1 = img_num_distance
 
-    return img_num_draw
+    return img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1
 
-def top_right(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width):
-    no_fit = True
-    removed_key = False
-    current_font_size = default_font_size
-    while no_fit:
-        img_num_font = ImageFont.truetype(Roboto, current_font_size)
-        img_num_text_width, img_num_text_height = img_num_draw.textsize(img_text, font=img_num_font)
+def top_right(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width, img_num_text_width, img_num_text_height):
+    img_num_box_width = img_num_text_width + img_num_distance * 2
+    img_num_box_height = img_num_text_height + img_num_distance * 2
+    img_num_box_x1 = img_num_width - img_num_text_width - img_num_distance * 3
+    img_num_box_y1 = img_num_text_height + img_num_distance * 2
 
-        img_num_box_width = img_num_text_width + img_num_distance * 2
-        img_num_box_height = img_num_text_height + img_num_distance * 2
-        img_num_box_x1 = img_num_width - img_num_text_width - img_num_distance * 3
-        img_num_box_y1 = img_num_text_height + img_num_distance * 4
+    return img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1
 
-        img_num_draw, no_fit = img_write(img_num_draw, img_text, img_num_box_width, img_num_text_width, img_num_box_height, img_num_text_height, img_num_box_x1, img_num_box_y1, img_num_box_color, img_num_font, img_num_color, img_num_distance, img_num_width, img_num_height)
-        if no_fit:
-            if current_font_size <= min_font_size:
-                if removed_key:
-                    print(f'Text for "{img_text}" does not fit on image')
-                    no_fit = False
-                else:
-                    img_text = img_text.split(": ", 1)[1]
-                    current_font_size = default_font_size
-                    removed_key = True
-            else:
-                current_font_size = current_font_size - 1
+def bottom_right(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width, img_num_text_width, img_num_text_height):
+    img_num_box_width = img_num_text_width + img_num_distance * 2
+    img_num_box_height = img_num_text_height + img_num_distance * 2
+    img_num_box_x1 = img_num_width - img_num_text_width - img_num_distance * 3
+    img_num_box_y1 = img_num_height - img_num_text_height * 2 - img_num_distance * 4
 
-    return img_num_draw
-
-def bottom_right(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width):
-    no_fit = True
-    removed_key = False
-    current_font_size = default_font_size
-    while no_fit:
-        img_num_font = ImageFont.truetype(Roboto, current_font_size)
-        img_num_text_width, img_num_text_height = img_num_draw.textsize(img_text, font=img_num_font)
-
-        img_num_box_width = img_num_text_width + img_num_distance * 2
-        img_num_box_height = img_num_text_height + img_num_distance * 2
-        img_num_box_x1 = img_num_width - img_num_text_width - img_num_distance * 3
-        img_num_box_y1 = img_num_height - img_num_text_height * 2 - img_num_distance * 4
-
-        img_num_draw, no_fit = img_write(img_num_draw, img_text, img_num_box_width, img_num_text_width, img_num_box_height, img_num_text_height, img_num_box_x1, img_num_box_y1, img_num_box_color, img_num_font, img_num_color, img_num_distance, img_num_width, img_num_height)
-        if no_fit:
-            if current_font_size <= min_font_size:
-                if removed_key:
-                    print(f'Text for "{img_text}" does not fit on image')
-                    no_fit = False
-                else:
-                    img_text = img_text.split(": ", 1)[1]
-                    current_font_size = default_font_size
-                    removed_key = True
-            else:
-                current_font_size = current_font_size - 1
-
-    return img_num_draw
+    return img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1
 
 # Insert individual image infos, in corners, in front of a box
 def handle_image_grid(params : script_callbacks.ImageGridLoopParams):
@@ -220,21 +170,21 @@ def handle_image_grid(params : script_callbacks.ImageGridLoopParams):
                 
                     if opts.sd_grid_add_image_number and opts.save_images_add_number and opts.samples_save and img_num_text.isdigit():
                         img_text = img_num_text
-                        img_num_draw = bottom_left(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width)
+                        img_num_draw = text_corner("bottom_left", img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width)
                     try:
                         if opts.sd_grid_add_xyz_info and (xyz_infos[img_filename]["xyz_plot_x"] is not None or xyz_infos[img_filename]["xyz_plot_y"] is not None or xyz_infos[img_filename]["xyz_plot_z"] is not None):
                             if xyz_infos[img_filename]["xyz_plot_x"] is not None:
                                 img_xyz_axis = f"{state.xyz_plot_x.axis.label}: {xyz_infos[img_filename]['xyz_plot_x']}"
                                 img_text = img_xyz_axis
-                                img_num_draw = top_left(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width)
+                                img_num_draw = text_corner("top_left", img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width)
                             if xyz_infos[img_filename]["xyz_plot_y"] is not None:
                                 img_xyz_axis = f"{state.xyz_plot_y.axis.label}: {xyz_infos[img_filename]['xyz_plot_y']}"
                                 img_text = img_xyz_axis
-                                img_num_draw = top_right(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width)
+                                img_num_draw = text_corner("top_right", img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width)
                             if xyz_infos[img_filename]["xyz_plot_z"] is not None:
                                 img_xyz_axis = f"{state.xyz_plot_z.axis.label}: {xyz_infos[img_filename]['xyz_plot_z']}"
                                 img_text = img_xyz_axis
-                                img_num_draw = bottom_right(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width)
+                                img_num_draw = text_corner("bottom_right", img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width)
                     except KeyError:
                         pass
                                            
