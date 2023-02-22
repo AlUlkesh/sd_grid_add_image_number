@@ -1,6 +1,8 @@
-# Stable Diffusion extension: Add the image's number to its picture in the grid
+# Stable Diffusion extension: Add the image's number and other info to its picture in the grid
 
-A custom extension for [AUTOMATIC1111/stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui) to add the image's number to its picture in the grid.
+A custom extension for [AUTOMATIC1111/stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui) to add the image's number and other info to its picture in the grid.
+
+# Image number
 
 After choosing a new grid option in the settings:
 <img src="images/settings.jpg"/>
@@ -10,6 +12,34 @@ the individual image numbers are added on the grid:
 <img src="images/xy_grid-0137-123-stickman.jpg"/>
 
 This should make identifying the images, especially in larger batches, much easier.
+
+#  X/Y/Z script info
+
+After choosing this grid option in the settings:
+<img src="images/settings2.jpg"/>
+
+X/Y/Z script info is being added on the grid:
+<img src="images/xyz.jpg"/>
+
+This is currently availabe for the following X/Y/Z options:
+Seed
+Var. seed
+Var. strength
+Steps
+Hires steps
+CFG Scale
+Image CFG Scale
+Sampler
+Checkpoint name
+Sigma Churn
+Sigma min
+Sigma max
+Sigma noise
+Eta
+Clip skip
+Denoising
+Cond. Image Mask Weight
+VAE
 
 ## Installation
 
