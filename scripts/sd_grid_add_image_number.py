@@ -70,7 +70,7 @@ def handle_image_saved(params : script_callbacks.ImageSaveParams):
 
 script_callbacks.on_image_saved(handle_image_saved)
 
-def img_write(img_num_draw, img_text, img_num_box_width, img_num_text_width, img_num_box_height, img_num_text_height, img_num_box_x1, img_num_box_y1, img_num_box_color, img_num_font, img_num_color, img_num_distance, img_num_width, img_num_height):
+def img_write(img, img_text, img_num_box_width, img_num_box_height, img_num_box_x1, img_num_box_y1, img_num_font, img_num_distance, img_num_width, img_num_height):
     img_num_box_x2 = img_num_box_x1 + img_num_box_width
     img_num_box_y2 = img_num_box_y1 + img_num_box_height
     img_num_x = img_num_box_x1 + img_num_distance
@@ -83,27 +83,36 @@ def img_write(img_num_draw, img_text, img_num_box_width, img_num_text_width, img
         no_fit = True
     else:
         no_fit = False
-        img_num_draw.rectangle((img_num_box_x1, img_num_box_y1, img_num_box_x2, img_num_box_y2), fill=img_num_box_color)
-        img_num_draw.text((img_num_x, img_num_y), img_text, font=img_num_font, fill=img_num_color)
+        img = img.convert("RGBA")
+        # White background, fully transparent
+        overlay = Image.new("RGBA", (img_num_width, img_num_height), (255, 255, 255, 0))
+        overlay_draw = ImageDraw.Draw(overlay)
+        # Black box, half transparent
+        overlay_draw.rectangle((img_num_box_x1, img_num_box_y1, img_num_box_x2, img_num_box_y2), fill=(0, 0, 0, 127))
+        img = Image.alpha_composite(img, overlay)
+        img = img.convert("RGB")
+        img_num_draw = ImageDraw.Draw(img)
+        img_num_draw.text((img_num_x, img_num_y), img_text, font=img_num_font, fill=(255, 255, 255))
 
-    return img_num_draw, no_fit
+    return img, no_fit
 
-def text_corner(corner, img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width):
+def text_corner(corner, img_text, img, img_num_distance, img_num_height, img_num_width):
     no_fit = True
     removed_key = False
     current_font_size = default_font_size
     while no_fit:
+        img_num_draw = ImageDraw.Draw(img)
         img_num_font = ImageFont.truetype(Roboto, current_font_size)
         img_num_text_width, img_num_text_height = img_num_draw.textsize(img_text, font=img_num_font)
         if corner == "bottom_left":
-            img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1 = bottom_left(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width, img_num_text_width, img_num_text_height)
+            img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1 = bottom_left(img_text, img_num_distance, img_num_height, img_num_width, img_num_text_width, img_num_text_height)
         if corner == "top_left":
-            img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1 = top_left(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width, img_num_text_width, img_num_text_height)
+            img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1 = top_left(img_text, img_num_distance, img_num_height, img_num_width, img_num_text_width, img_num_text_height)
         if corner == "top_right":
-            img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1 = top_right(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width, img_num_text_width, img_num_text_height)
+            img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1 = top_right(img_text, img_num_distance, img_num_height, img_num_width, img_num_text_width, img_num_text_height)
         if corner == "bottom_right":
-            img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1 = bottom_right(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width, img_num_text_width, img_num_text_height)
-        img_num_draw, no_fit = img_write(img_num_draw, img_text, img_num_box_width, img_num_text_width, img_num_box_height, img_num_text_height, img_num_box_x1, img_num_box_y1, img_num_box_color, img_num_font, img_num_color, img_num_distance, img_num_width, img_num_height)
+            img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1 = bottom_right(img_text, img_num_distance, img_num_height, img_num_width, img_num_text_width, img_num_text_height)
+        img, no_fit = img_write(img, img_text, img_num_box_width, img_num_box_height, img_num_box_x1, img_num_box_y1, img_num_font, img_num_distance, img_num_width, img_num_height)
         if no_fit:
             if current_font_size <= min_font_size:
                 if removed_key:
@@ -116,44 +125,44 @@ def text_corner(corner, img_text, img_num_draw, img_num_distance, img_num_height
             else:
                 current_font_size = current_font_size - 1
 
-    return img_num_draw
+    return img
 
-def bottom_left(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width, img_num_text_width, img_num_text_height):
+def bottom_left(img_text, img_num_distance, img_num_height, img_num_width, img_num_text_width, img_num_text_height):
     img_num_box_width = img_num_text_width + img_num_distance * 2
     img_num_box_height = img_num_text_height + img_num_distance * 2
     img_num_box_x1 = img_num_distance
     img_num_box_y1 = img_num_height - img_num_distance - img_num_box_height
 
-    return img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1
+    return img_num_box_width, img_num_box_height, img_num_box_x1, img_num_box_y1
 
-def top_left(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width, img_num_text_width, img_num_text_height):
+def top_left(img_text, img_num_distance, img_num_height, img_num_width, img_num_text_width, img_num_text_height):
     img_num_box_width = img_num_text_width + img_num_distance * 2
     img_num_box_height = img_num_text_height + img_num_distance * 2
     img_num_box_x1 = img_num_distance
     img_num_box_y1 = img_num_distance
 
-    return img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1
+    return img_num_box_width, img_num_box_height, img_num_box_x1, img_num_box_y1
 
-def top_right(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width, img_num_text_width, img_num_text_height):
+def top_right(img_text, img_num_distance, img_num_height, img_num_width, img_num_text_width, img_num_text_height):
     img_num_box_width = img_num_text_width + img_num_distance * 2
     img_num_box_height = img_num_text_height + img_num_distance * 2
     img_num_box_x1 = img_num_width - img_num_text_width - img_num_distance * 3
     img_num_box_y1 = img_num_text_height + img_num_distance * 2
 
-    return img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1
+    return img_num_box_width, img_num_box_height, img_num_box_x1, img_num_box_y1
 
-def bottom_right(img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width, img_num_text_width, img_num_text_height):
+def bottom_right(img_text, img_num_distance, img_num_height, img_num_width, img_num_text_width, img_num_text_height):
     img_num_box_width = img_num_text_width + img_num_distance * 2
     img_num_box_height = img_num_text_height + img_num_distance * 2
     img_num_box_x1 = img_num_width - img_num_text_width - img_num_distance * 3
     img_num_box_y1 = img_num_height - img_num_text_height * 2 - img_num_distance * 4
 
-    return img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1
+    return img_num_box_width, img_num_box_height, img_num_box_x1, img_num_box_y1
 
 # Insert individual image infos, in corners, in front of a box
 def handle_image_grid(params : script_callbacks.ImageGridLoopParams):
     if opts.sd_grid_add_image_number or opts.sd_grid_add_xyz_info:
-        for img in params.imgs:
+        for i, img in enumerate(params.imgs):
             if hasattr(img, "already_saved_as"):
                 img_filename = img.already_saved_as
                 img_filename_base = os.path.basename(img.already_saved_as)
@@ -161,31 +170,28 @@ def handle_image_grid(params : script_callbacks.ImageGridLoopParams):
                 img_num_text = img_filename_split[0]
 
                 if img_num_text != "grid":
-                    img_num_draw = ImageDraw.Draw(img)
-                    img_num_color = (255, 255, 255)
-                    img_num_box_color = (0, 0, 0)
                     img_num_distance = 10
 
                     img_num_width, img_num_height = img.size
                 
                     if opts.sd_grid_add_image_number and opts.save_images_add_number and opts.samples_save and img_num_text.isdigit():
                         img_text = img_num_text
-                        img_num_draw = text_corner("bottom_left", img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width)
+                        img = text_corner("bottom_left", img_text, img, img_num_distance, img_num_height, img_num_width)
                     try:
                         if opts.sd_grid_add_xyz_info and (xyz_infos[img_filename]["xyz_plot_x"] is not None or xyz_infos[img_filename]["xyz_plot_y"] is not None or xyz_infos[img_filename]["xyz_plot_z"] is not None):
                             if xyz_infos[img_filename]["xyz_plot_x"] is not None:
                                 img_xyz_axis = f"{state.xyz_plot_x.axis.label}: {xyz_infos[img_filename]['xyz_plot_x']}"
                                 img_text = img_xyz_axis
-                                img_num_draw = text_corner("top_left", img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width)
+                                img = text_corner("top_left", img_text, img, img_num_distance, img_num_height, img_num_width)
                             if xyz_infos[img_filename]["xyz_plot_y"] is not None:
                                 img_xyz_axis = f"{state.xyz_plot_y.axis.label}: {xyz_infos[img_filename]['xyz_plot_y']}"
                                 img_text = img_xyz_axis
-                                img_num_draw = text_corner("top_right", img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width)
+                                img = text_corner("top_right", img_text, img, img_num_distance, img_num_height, img_num_width)
                             if xyz_infos[img_filename]["xyz_plot_z"] is not None:
                                 img_xyz_axis = f"{state.xyz_plot_z.axis.label}: {xyz_infos[img_filename]['xyz_plot_z']}"
                                 img_text = img_xyz_axis
-                                img_num_draw = text_corner("bottom_right", img_text, img_num_draw, img_num_distance, img_num_height, img_num_box_color, img_num_color, img_num_width)
+                                img = text_corner("bottom_right", img_text, img, img_num_distance, img_num_height, img_num_width)
                     except KeyError:
                         pass
-                                           
+                    params.imgs[i] = img
 script_callbacks.on_image_grid(handle_image_grid)
