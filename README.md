@@ -43,6 +43,8 @@ This is currently availabe for the following X/Y/Z options:
 - Cond. Image Mask Weight
 - VAE
 
+Any other options and extra parameters can be enabled with the `Add Extra Generation Parameters` option through the UI's Settings pane. (:warning:_formatting can get wonky_)
+
 ## Installation
 
 The extension can be installed directly from within the **Extensions** tab within the Webui.
