@@ -39,9 +39,17 @@ xyz_options = {
 
 # Add option to settings
 def on_ui_settings():
-    opts.add_option("sd_grid_add_image_number", OptionInfo(True, "Add the image's number to its picture in the grid (when 'Add number to filename' is on)", section=("saving-images", "Saving images/grids")))
-    opts.add_option("sd_grid_add_xyz_info", OptionInfo(False, "Add X/Y/Z script info to its picture in the grid", section=("saving-images", "Saving images/grids")))
-    opts.add_option("sd_grid_add_extra_generation_parameters", OptionInfo(False, "Add extra generation parameters to its picture in the grid", section=("saving-images", "Saving images/grids")))
+    img_num_section = "saving-images"
+    img_num_section_name = img_num_section
+
+    for key, opt in opts.data_labels.items():
+        if opt.section[0] == img_num_section:
+            img_num_section_name = opt.section[1]
+            break
+
+    opts.add_option("sd_grid_add_image_number", OptionInfo(True, "Add the image's number to its picture in the grid (when 'Add number to filename' is on)", section=(img_num_section, img_num_section_name)))
+    opts.add_option("sd_grid_add_xyz_info", OptionInfo(False, "Add X/Y/Z script info to its picture in the grid", section=(img_num_section, img_num_section_name)))
+    opts.add_option("sd_grid_add_extra_generation_parameters", OptionInfo(False, "Add extra generation parameters to its picture in the grid", section=(img_num_section, img_num_section_name)))
 script_callbacks.on_ui_settings(on_ui_settings)
 
 # OneLiner to retrieve the value of a key in a dict, case insensitive
