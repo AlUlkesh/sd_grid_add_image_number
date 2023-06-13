@@ -83,15 +83,28 @@ def getaxis_value(p, img_filename, getaxis):
                     axis_value = None
     xyz_infos[img_filename][getaxis] = axis_value
 
+def get_img_num_text(img_filename):
+    img_filename_base = os.path.basename(img_filename)
+    img_filename_split = img_filename_base.split('-')
+    img_num_text = img_filename_split[0]
+
+    if img_num_text.endswith("grid"):
+        img_num_text = None
+
+    return img_num_text
+
 def handle_image_saved(params : script_callbacks.ImageSaveParams):
     global xyz_infos
     if opts.sd_grid_add_xyz_info or opts.sd_grid_add_extra_generation_parameters:
         if hasattr(params.image, "already_saved_as"):
             img_filename = params.image.already_saved_as
-            xyz_infos[img_filename] = {}
-            getaxis_value(params.p, img_filename, "xyz_plot_x")
-            getaxis_value(params.p, img_filename, "xyz_plot_y")
-            getaxis_value(params.p, img_filename, "xyz_plot_z")
+            img_num_text = get_img_num_text(img_filename)
+
+            if img_num_text != None:
+                xyz_infos[img_filename] = {}
+                getaxis_value(params.p, img_filename, "xyz_plot_x")
+                getaxis_value(params.p, img_filename, "xyz_plot_y")
+                getaxis_value(params.p, img_filename, "xyz_plot_z")
 
 script_callbacks.on_image_saved(handle_image_saved)
 
@@ -190,11 +203,9 @@ def handle_image_grid(params : script_callbacks.ImageGridLoopParams):
         for i, img in enumerate(params.imgs):
             if hasattr(img, "already_saved_as"):
                 img_filename = img.already_saved_as
-                img_filename_base = os.path.basename(img.already_saved_as)
-                img_filename_split = img_filename_base.split('-')
-                img_num_text = img_filename_split[0]
+                img_num_text = get_img_num_text(img_filename)
 
-                if img_num_text != "grid":
+                if img_num_text != None:
                     img_num_distance = 10
 
                     img_num_width, img_num_height = img.size
