@@ -1,11 +1,11 @@
-from modules import scripts
-from modules import script_callbacks
-from modules.processing import Processed
-from modules.shared import opts, OptionInfo, state
-from fonts.ttf import Roboto
-from PIL import Image, ImageFont, ImageDraw
-import modules.sd_vae
 import os
+
+from PIL import Image, ImageDraw
+
+import modules.sd_vae
+from modules import script_callbacks
+from modules.images import get_font
+from modules.shared import OptionInfo, opts, state
 
 xyz_infos = {}
 default_font_size = 24
@@ -140,7 +140,7 @@ def text_corner(corner, img_text, img, img_num_distance, img_num_height, img_num
     current_font_size = default_font_size
     while no_fit:
         img_num_draw = ImageDraw.Draw(img)
-        img_num_font = ImageFont.truetype(Roboto, current_font_size)
+        img_num_font = get_font(current_font_size)
         img_num_text_width, img_num_text_height = img_num_draw.textsize(img_text, font=img_num_font)
         if corner == "bottom_left":
             img_num_box_width,  img_num_box_height, img_num_box_x1, img_num_box_y1 = bottom_left(img_text, img_num_distance, img_num_height, img_num_width, img_num_text_width, img_num_text_height)
