@@ -23,27 +23,7 @@ After choosing this grid option in the settings:
 X/Y/Z script info is being added on the grid:
 <img src="images/xyz.jpg"/>
 
-This is currently availabe for the following X/Y/Z options:
-- Seed
-- Var. seed
-- Var. strength
-- Steps
-- Hires steps
-- CFG Scale
-- Image CFG Scale
-- Sampler
-- Checkpoint name
-- Sigma Churn
-- Sigma min
-- Sigma max
-- Sigma noise
-- Eta
-- Clip skip
-- Denoising
-- Cond. Image Mask Weight
-- VAE
-
-Any other options and extra parameters can be enabled with the `Add Extra Generation Parameters` option through the UI's Settings pane. (:warning:_formatting can get wonky_)
+This is availabe for every X/Y/Z option, which can be retrieved from the processing info (like "Checkpoint name") or from the options (like "Clip skip"). When in doubt, you can just try it out.
 
 ## Installation
 
