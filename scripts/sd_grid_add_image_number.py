@@ -96,20 +96,33 @@ def handle_image_saved(params : script_callbacks.ImageSaveParams):
             img_num_text = get_img_num_text(img_filename)
 
             if img_num_text != None:
-                img_label_x, img_key_x, img_value_x = getaxis_infos(params.p, state.xyz_plot_x)
-                img_label_y, img_key_y, img_value_y = getaxis_infos(params.p, state.xyz_plot_y)
-                img_label_z, img_key_z, img_value_z = getaxis_infos(params.p, state.xyz_plot_z)
-                xyz_infos[img_filename] = {
-                    "img_label_x": img_label_x,
-                    "img_key_x": img_key_x,
-                    "img_value_x": img_value_x,
-                    "img_label_y": img_label_y,
-                    "img_key_y": img_key_y,
-                    "img_value_y": img_value_y,
-                    "img_label_z": img_label_z,
-                    "img_key_z": img_key_z,
-                    "img_value_z": img_value_z
-                }
+                try:
+                    img_label_x, img_key_x, img_value_x = getaxis_infos(params.p, state.xyz_plot_x)
+                    img_label_y, img_key_y, img_value_y = getaxis_infos(params.p, state.xyz_plot_y)
+                    img_label_z, img_key_z, img_value_z = getaxis_infos(params.p, state.xyz_plot_z)
+                    xyz_infos[img_filename] = {
+                        "img_label_x": img_label_x,
+                        "img_key_x": img_key_x,
+                        "img_value_x": img_value_x,
+                        "img_label_y": img_label_y,
+                        "img_key_y": img_key_y,
+                        "img_value_y": img_value_y,
+                        "img_label_z": img_label_z,
+                        "img_key_z": img_key_z,
+                        "img_value_z": img_value_z
+                    }
+                except AttributeError:
+                    xyz_infos[img_filename] = {
+                        "img_label_x": None,
+                        "img_key_x": None,
+                        "img_value_x": None,
+                        "img_label_y": None,
+                        "img_key_y": None,
+                        "img_value_y": None,
+                        "img_label_z": None,
+                        "img_key_z": None,
+                        "img_value_z": None
+                    }
                 
 script_callbacks.on_image_saved(handle_image_saved)
 
